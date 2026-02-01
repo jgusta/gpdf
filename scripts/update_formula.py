@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import argparse
 import hashlib
 import json
 import re
@@ -26,17 +27,36 @@ def _sha256(url: str) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def _latest_release(tag: str | None) -> dict:
+    if tag:
+        return _get_json(f"https://api.github.com/repos/{REPO}/releases/tags/{tag}")
+    releases = _get_json(f"https://api.github.com/repos/{REPO}/releases")
+    if not releases:
+        raise SystemExit("No releases found")
+    return releases[0]
+
+
 def main() -> None:
-    release = _get_json(f"https://api.github.com/repos/{REPO}/releases/latest")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--tag", help="release tag (e.g. v0.1.1)")
+    args = parser.parse_args()
+
+    release = _latest_release(args.tag)
     tag = release.get("tag_name", "")
     if not tag.startswith("v"):
         raise SystemExit(f"Unexpected tag: {tag}")
     version = tag[1:]
 
-    base = f"https://github.com/{REPO}/releases/download/{tag}"
     shas = {}
     for key, name in ASSETS.items():
-        url = f"{base}/{name}"
+        assets = release.get("assets", [])
+        url = ""
+        for asset in assets:
+            if asset.get("name") == name:
+                url = asset.get("browser_download_url", "")
+                break
+        if not url:
+            raise SystemExit(f"Asset not found in release {tag}: {name}")
         shas[key] = _sha256(url)
 
     text = FORMULA_PATH.read_text(encoding="utf-8")

@@ -1,7 +1,7 @@
 class Gpdf < Formula
   desc "grep-like search for PDFs"
   homepage "https://github.com/jgusta/gpdf"
-  version "0.1.1"
+  version "0.1.2"
 
   if OS.mac?
     url "https://github.com/jgusta/gpdf/releases/download/v#{version}/gpdf-macos-latest"

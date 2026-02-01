@@ -49,6 +49,12 @@ To update automatically from the latest GitHub release:
 python3 scripts/update_formula.py
 ```
 
+To target a specific tag:
+
+```
+python3 scripts/update_formula.py --tag v0.1.1
+```
+
 ## Desktop app (report mode)
 
 ```
