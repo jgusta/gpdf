@@ -24,7 +24,16 @@ pip install -r requirements.txt
 ./build.sh
 ```
 
-The executable will be at `dist/gpdf`. Build on each OS you want a native binary for.
+The CLI executable will be at `dist/gpdf`. On macOS, the GUI app bundle will be at `dist/gpdf_app.app`.
+Build on each OS you want a native binary for.
+
+## Build standalone (Windows)
+
+```
+powershell -ExecutionPolicy Bypass -File .\build_windows.ps1
+```
+
+This produces `dist\\gpdf.exe` and `dist\\gpdf_app.exe`.
 
 ## Homebrew (local formula)
 

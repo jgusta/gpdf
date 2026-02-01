@@ -6,5 +6,7 @@ source .venv-build/bin/activate
 pip install -r requirements.txt -r requirements-build.txt
 
 pyinstaller --onefile --name gpdf gpdf.py
+pyinstaller --windowed --name gpdf_app gpdf_app.py
 
 echo "Built: dist/gpdf"
+echo "Built: dist/gpdf_app.app (macOS)"

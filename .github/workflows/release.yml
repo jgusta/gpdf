@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
@@ -24,15 +24,49 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Build
+      - name: Build (macOS/Linux)
+        if: matrix.os != 'windows-latest'
         run: ./build.sh
 
-      - name: Package
+      - name: Build (Windows)
+        if: matrix.os == 'windows-latest'
+        run: .\\build_windows.ps1
+        shell: pwsh
+
+      - name: Package (macOS/Linux)
+        if: matrix.os != 'windows-latest'
         run: |
           mv dist/gpdf dist/gpdf-${{ matrix.os }}
           chmod +x dist/gpdf-${{ matrix.os }}
+          if [ "${{ matrix.os }}" = "macos-latest" ]; then
+            ditto -c -k --sequesterRsrc --keepParent dist/gpdf_app.app dist/gpdf_app-${{ matrix.os }}.zip
+          fi
 
-      - name: Release
+      - name: Package (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          Move-Item dist\\gpdf.exe dist\\gpdf-${{ matrix.os }}.exe
+          Move-Item dist\\gpdf_app.exe dist\\gpdf_app-${{ matrix.os }}.exe
+        shell: pwsh
+
+      - name: Release (macOS)
+        if: matrix.os == 'macos-latest'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/gpdf-${{ matrix.os }}
+            dist/gpdf_app-${{ matrix.os }}.zip
+
+      - name: Release (Linux)
+        if: matrix.os == 'ubuntu-latest'
         uses: softprops/action-gh-release@v2
         with:
           files: dist/gpdf-${{ matrix.os }}
+
+      - name: Release (Windows)
+        if: matrix.os == 'windows-latest'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/gpdf-${{ matrix.os }}.exe
+            dist/gpdf_app-${{ matrix.os }}.exe
