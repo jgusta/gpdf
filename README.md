@@ -26,6 +26,24 @@ pip install -r requirements.txt
 
 The executable will be at `dist/gpdf`. Build on each OS you want a native binary for.
 
+## Homebrew (local formula)
+
+Update `Formula/gpdf.rb` with the tag version and SHA256 for your release assets, then:
+
+```
+brew install --build-from-source Formula/gpdf.rb
+```
+
+## Desktop app (report mode)
+
+```
+python3 gpdf_app.py
+```
+
+This opens a simple GUI that runs `gpdf` in report mode for a chosen directory.
+On macOS, the app uses native dialogs via AppleScript (no Tkinter required).
+On Linux, `python3` must include Tkinter support.
+
 ## Usage
 
 ```
