@@ -43,6 +43,12 @@ Update `Formula/gpdf.rb` with the tag version and SHA256 for your release assets
 brew install --build-from-source Formula/gpdf.rb
 ```
 
+To update automatically from the latest GitHub release:
+
+```
+python3 scripts/update_formula.py
+```
+
 ## Desktop app (report mode)
 
 ```
