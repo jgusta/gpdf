@@ -18,6 +18,14 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+## Build standalone (macOS/Linux)
+
+```
+./build.sh
+```
+
+The executable will be at `dist/gpdf`. Build on each OS you want a native binary for.
+
 ## Usage
 
 ```
